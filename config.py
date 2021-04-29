@@ -1,5 +1,6 @@
 # Default PPA settings
 pop_size = 5
+max_offspring = 5 #n_max
 
 # run settings
 max_evaluations = 1000
@@ -8,6 +9,6 @@ max_evaluations = 1000
 benchmark_name = 'Griewank'
 
 # survivor selection
-survivor_selection = 'mulambda'
+survivor_selection = 'mupluslambda'
 
 

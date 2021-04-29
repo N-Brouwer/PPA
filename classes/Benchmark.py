@@ -5,7 +5,7 @@ class Benchmark:
 
     def __init__(self, benchmark_name):
         self.input_dimension = None
-        self.bounds = None  # [float, float]
+        self.bounds = None  # [[lower:float, upper:float]] per dimension
         self.benchmark = None
         self.set_benchmark(benchmark_name)
 

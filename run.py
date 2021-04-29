@@ -1,37 +1,24 @@
-import random
-
 from classes.SurvivorSelection import SurvivorSelection
 from classes.Benchmark import Benchmark
-from classes.Individual import Individual
+from classes.PPAProcess import PPAProcess
 import config
 
 
 class run:
     def __init__(self):
-        self.parent_population = []
-
-        self.survivor_selection = SurvivorSelection(config.survivor_selection)
+        self.survivor_selection = SurvivorSelection(config.survivor_selection, config.pop_size)
         self.benchmark = Benchmark(config.benchmark_name)
-        self.parent_population = self.initial_generate_parents(config.pop_size, self.benchmark)
         self.run()
 
     def run(self):
         print('run')
+        ppa = PPAProcess(config.pop_size, config.max_offspring, self.benchmark, self.survivor_selection)
+        ppa.calculate_objective_values_parents()
+        ppa.calculate_fitness_values_parents()
+        ppa.generate_offspring()
+        ppa.calculate_objective_values_offspring()
 
-    def initial_generate_parents(self, pop_size: int, benchmark: Benchmark):
-        parents = []
-        self.parent_population = []
-        for i in range(0, pop_size):
-            x = Individual()
-            inputs = []
-            for d in range(0, benchmark.input_dimension):
-                bound = benchmark.bounds[d]
-                inputs.append(random.uniform(bound[0], bound[1]))
-            x.set_inputs(inputs)
-            x.calculate_fitness(benchmark)
-            parents.append(x)
-
-        return parents
+        ppa.select_survivors()
 
 
 start = run()
