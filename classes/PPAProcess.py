@@ -1,5 +1,6 @@
 import math
 import random
+from operator import attrgetter
 
 import numpy as np
 from PPA.classes.Benchmark import Benchmark
@@ -29,6 +30,13 @@ class PPAProcess:
 
         self.parents_fitness = []  # todo do i still use this?
         self.offspring_fitness = []  # todo do i still use this?
+
+        # used for data analytics:
+        self.run_n = ''
+        self.benchmark_name = ''
+        self.survivor_selection_name = ''
+        self.best_objval_during_run = self.parent_population[
+            0]  # recorded in the select survivors method, initialised with a random individual
 
     def calculate_objective_values_parents(self):
         self.calculate_objective_values(self.parent_population)
@@ -64,11 +72,16 @@ class PPAProcess:
                 new_inputs = []
                 for j in range(self.benchmark.input_dimension):
                     distance = 2 * (1 - i.fitness) * (random.uniform(0, 1) - 0.5)
+                    new_input = i.inputs[j] + ((self.benchmark.bounds[j][1] - self.benchmark.bounds[j][0]) * distance)
 
-                    new_inputs.append(
-                        i.inputs[j] + ((self.benchmark.bounds[j][1] - self.benchmark.bounds[j][0]) * distance))
+                    corrected_input = self.benchmark.bounds[j][0] if new_input < self.benchmark.bounds[j][0] else \
+                        self.benchmark.bounds[j][1] if new_input > self.benchmark.bounds[j][1] else new_input
+
+                    new_inputs.append(corrected_input)
+
                 self.id_counter += 1
                 new_individual = Individual(self.id_counter)
+                new_individual.parent_id = i.id
                 new_individual.set_inputs(new_inputs).objective_value = self.benchmark.eval(new_inputs)
                 new_individual.set_parents(i.parents[:])
 
@@ -79,9 +92,15 @@ class PPAProcess:
     def select_survivors(self):
         self.parent_population = self.survivor_selection.select_survivors(self.parent_population,
                                                                           self.offspring_population)
+        min_objval_individual = min(self.parent_population, key=attrgetter('objective_value'))
+        if min_objval_individual.objective_value < self.best_objval_during_run.objective_value:
+            self.best_objval_during_run = min_objval_individual
 
     def save_heritage(self):
         self.heritage.add_ancestors(self.parent_population, self.generation)
+        for individual in self.parent_population:
+            if not individual.parent_child_relation_recorded:
+                self.heritage.save_relation(individual.id, individual.parent_id)
 
     #  sort of private functions
     def calculate_fitness(self, population: []):
@@ -129,6 +148,7 @@ class PPAProcess:
         for i in range(0, pop_size):
             self.id_counter += 1
             x = Individual(self.id_counter)
+            x.parent_id = -1
             inputs = []
             for d in range(0, benchmark.input_dimension):
                 bound = benchmark.bounds[d]

@@ -1,5 +1,4 @@
 import random
-
 import numpy as np
 from PPA import config
 from operator import attrgetter
@@ -97,12 +96,13 @@ class SurvivorSelection:
         combined_population = parents[:] + offspring[:]
         combined_population.sort(key=lambda i: i.objective_value)
         sum_of_ranks = sum(np.arange(1, len(combined_population) + 1,
-                                     1))  # todo check if all the numbers are there or if there should be a +1
+                                     1))  # added 1 because the minimal position is 0, but should be rank 1
+
 
         for t in range(self.pop_size):
             y = 0
             r = random.uniform(0, sum_of_ranks)
-            rank = len(combined_population)
+            rank = len(combined_population)+1
             for i in combined_population:
                 rank -= 1
                 y += rank
