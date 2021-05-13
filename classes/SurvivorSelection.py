@@ -18,6 +18,9 @@ class SurvivorSelection:
         elif method_name == 'tournament':
             self.tournament_size = config.tournament_size
             return self.tournament
+        elif method_name == 'single_elitist_tournament':
+            self.tournament_size = config.tournament_size
+            return self.single_elitist_tournament
         elif method_name == 'roulette_wheel':
             return self.rws
         elif method_name == 'linear_ranking':
@@ -42,10 +45,17 @@ class SurvivorSelection:
 
         return new_population[:self.pop_size]
 
-    def tournament(self, parents: [], offspring: []):
+    def single_elitist_tournament(self, parents: [], offspring: []):
+        new_population = self.rws(parents, offspring, self.pop_size-1)
+        combined_population = parents[:] + offspring[:] # todo check if calculations do not influence the original parents and offspring variables
+        new_population.append(min(combined_population, key=attrgetter('objective_value')))
+        return new_population
+
+    def tournament(self, parents: [], offspring: [], custom_pop_size=-1):
         combined_population = parents + offspring
         new_population = []
-        for i in range(self.pop_size):
+        new_pop_size = custom_pop_size if custom_pop_size > 0 else self.pop_size
+        for i in range(new_pop_size):
             tournament = random.choices(combined_population, k=self.tournament_size)
             new_population.append(min(tournament, key=attrgetter('objective_value')))
 

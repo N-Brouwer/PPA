@@ -3,8 +3,8 @@ import numpy as np
 
 class Benchmark:
 
-    def __init__(self, benchmark_name):
-        self.input_dimension = None
+    def __init__(self, benchmark_name, input_dimensions):
+        self.input_dimension = input_dimensions
         self.bounds = None  # [[lower:float, upper:float]] per dimension
         self.benchmark = None
         self.optimum = None
@@ -14,86 +14,72 @@ class Benchmark:
     def set_benchmark(self, benchmark_name: str):
 
         if benchmark_name == 'Six-Hump-Camel':
-            self.input_dimension = 2
             self.bounds = [[-3.0, 3.0], [-2.0, 2]]
             self.benchmark = self.six_hump_camel
             self.optimum = -1.031628453489877
 
         elif benchmark_name == 'Martin-Gaddy':
-            self.input_dimension = 2
             self.bounds = [[-20.0, 20.0], [-20.0, 20.0]]
             self.benchmark = self.martin_gaddy
             self.optimum = 0
 
         elif benchmark_name == 'Goldstein-Price':
-            self.input_dimension = 2
             self.bounds = [[-2, 2], [-2, 2]]
             self.benchmark = self.goldstein_price
             self.optimum = 3
 
         elif benchmark_name == 'Branin':
-            self.input_dimension = 2
             self.bounds = [[-5, 15], [-5, 15]]
             self.benchmark = self.branin
             self.optimum = 0.39788735772973816
 
         elif benchmark_name == 'Easom':
-            self.input_dimension = 2
             self.bounds = [[-100, 100], [-100, 100]]
             self.benchmark = self.easom
             self.optimum = -1
 
         elif benchmark_name == 'Rosenbrock':
-            self.input_dimension = 2
-            self.bounds = [[-5, 10], [-5, 10]]
+            self.bounds = [[-5, 10] for i in range(self.input_dimension)]
             self.benchmark = self.rosenbrock
             self.optimum = 0
 
         elif benchmark_name == 'Ackley':
-            self.input_dimension = 2
-            self.bounds = [[-100, 100], [-100, 100]]
+            self.bounds = [[-100, 100] for i in range(self.input_dimension)]
             self.benchmark = self.ackley
             self.optimum = 0
 
         elif benchmark_name == 'Griewank':
-            self.input_dimension = 2
-            self.bounds = [[-600, 600], [-600, 600]]
+            self.bounds = [[-600, 600] for i in range(self.input_dimension)]
             self.benchmark = self.griewank
             self.optimum = 0
 
         elif benchmark_name == 'Rastrigrin':
-            self.input_dimension = 2
-            self.bounds = [[-5.12, 5.12], [-5.12, 5.12]]
+            self.bounds = [[-5.12, 5.12] for i in range(self.input_dimension)]
             self.benchmark = self.rastrigrin
             self.optimum = 0
 
         elif benchmark_name == 'Schwefel':
-            self.input_dimension = 2
-            self.bounds = [[-500, 500], [-500, 500]]
+            self.bounds = [[-500, 500] for i in range(self.input_dimension)]
             self.benchmark = self.schwefel
             self.optimum = 0
 
         elif benchmark_name == 'Ellipse':
-            self.input_dimension = 2
-            self.bounds = [[-100, 100], [-100, 100]]
+            self.bounds = [[-100, 100] for i in range(self.input_dimension)]
             self.benchmark = self.ellipse
             self.optimum = 0
 
         elif benchmark_name == 'Cigar':
-            self.input_dimension = 2
-            self.bounds = [[-100, 100], [-100, 100]]
+            self.bounds = [[-100, 100] for i in range(self.input_dimension)]
             self.benchmark = self.cigar
             self.optimum = 0
 
         elif benchmark_name == 'Tablet':
-            self.input_dimension = 2
-            self.bounds = [[-100, 100], [-100, 100]]
+            self.bounds = [[-100, 100] for i in range(self.input_dimension)]
             self.benchmark = self.tablet
             self.optimum = 0
 
         elif benchmark_name == 'Sphere':
-            self.input_dimension = 2
-            self.bounds = [[-100, 100], [-100, 100]]
+            self.bounds = [[-100,100] for i in range(self.input_dimension)]
             self.benchmark = self.sphere
             self.optimum = 0
         else:

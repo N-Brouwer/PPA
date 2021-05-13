@@ -71,12 +71,12 @@ class PPAProcess:
             for r in range(0, number_offspring):
                 new_inputs = []
                 for j in range(self.benchmark.input_dimension):
+
                     distance = 2 * (1 - i.fitness) * (random.uniform(0, 1) - 0.5)
                     new_input = i.inputs[j] + ((self.benchmark.bounds[j][1] - self.benchmark.bounds[j][0]) * distance)
 
                     corrected_input = self.benchmark.bounds[j][0] if new_input < self.benchmark.bounds[j][0] else \
                         self.benchmark.bounds[j][1] if new_input > self.benchmark.bounds[j][1] else new_input
-
                     new_inputs.append(corrected_input)
 
                 self.id_counter += 1

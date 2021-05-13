@@ -21,7 +21,8 @@ class Individual:
         return self
 
     def set_parents(self, ancestor_parents: []):
-        ancestor_parents.append(self)
+        heritage_data = {"id": self.id, "objective_value":self.objective_value, "inputs":self.inputs}
+        ancestor_parents.append(heritage_data)
         self.parents = ancestor_parents
 
     def calculate_fitness(self, benchmark: Benchmark):
