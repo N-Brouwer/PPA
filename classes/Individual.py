@@ -14,16 +14,19 @@ class Individual:
         self.parent_id = None
         self.parent_child_relation_recorded = False
         self.id = individual_id
-
+        self.age = 0
 
     def set_inputs(self, inputs: []):
         self.inputs = inputs
         return self
 
     def set_parents(self, ancestor_parents: []):
-        heritage_data = {"id": self.id, "objective_value":self.objective_value, "inputs":self.inputs}
+        heritage_data = {"id": self.id, "objective_value": self.objective_value, "inputs": self.inputs}
         ancestor_parents.append(heritage_data)
         self.parents = ancestor_parents
 
     def calculate_fitness(self, benchmark: Benchmark):
         self.fitness = benchmark.eval(self.inputs)
+
+    def increment_age(self):
+        self.age += 1

@@ -71,7 +71,6 @@ class PPAProcess:
             for r in range(0, number_offspring):
                 new_inputs = []
                 for j in range(self.benchmark.input_dimension):
-
                     distance = 2 * (1 - i.fitness) * (random.uniform(0, 1) - 0.5)
                     new_input = i.inputs[j] + ((self.benchmark.bounds[j][1] - self.benchmark.bounds[j][0]) * distance)
 
@@ -92,15 +91,26 @@ class PPAProcess:
     def select_survivors(self):
         self.parent_population = self.survivor_selection.select_survivors(self.parent_population,
                                                                           self.offspring_population)
+        incremented_individuals = []
+        for i in self.parent_population:
+
+            if i.id not in incremented_individuals:
+                i.increment_age()
+                incremented_individuals.append(i.id)
+
         min_objval_individual = min(self.parent_population, key=attrgetter('objective_value'))
         if min_objval_individual.objective_value < self.best_objval_during_run.objective_value:
             self.best_objval_during_run = min_objval_individual
 
     def save_heritage(self):
         self.heritage.add_ancestors(self.parent_population, self.generation)
+        self.heritage.save_unique_individual_count(self.generation, self.parent_population)
+        self.heritage.save_ages(self.generation, self.parent_population)
+
         for individual in self.parent_population:
             if not individual.parent_child_relation_recorded:
                 self.heritage.save_relation(individual.id, individual.parent_id)
+                individual.parent_child_relation_recorded = True
 
     #  sort of private functions
     def calculate_fitness(self, population: []):

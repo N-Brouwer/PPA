@@ -48,7 +48,8 @@ class run:
             ppa.benchmark_optimum = self.benchmark.optimum
             delattr(ppa, 'offspring_population')
             delattr(ppa, 'benchmark')
-            delattr(ppa, "heritage")
+            if self.survivor_selection_name not in config.record_heritage_selection_methods:
+                delattr(ppa, "heritage")
             pickle.dump(ppa, open(self.file_name, "wb"))
         return ppa
 
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     Path(folder_path).mkdir(parents=False, exist_ok=False)
     processes = []
     with concurrent.futures.ProcessPoolExecutor() as executor:  # max_workers=6
-        for run_n in range(10):
+        for run_n in range(11):
             print(f'run {run_n}')
             # ! change this to all benchmarks for all benchmarks
             for benchmark in config.all_benchmarks:
