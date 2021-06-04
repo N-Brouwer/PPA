@@ -27,6 +27,8 @@ class run:
 
         ppa = PPAProcess(config.pop_size, config.max_offspring, self.benchmark, self.survivor_selection, self.heritage)
         ppa.calculate_objective_values_parents()
+        ppa.normalize_objective_values_parents()
+        ppa.calculate_fitness_values_parents()
         ppa.save_heritage()
 
         while ppa.benchmark.eval_counter < config.max_evaluations:
@@ -35,7 +37,7 @@ class run:
             ppa.calculate_fitness_values_parents()
             ppa.generate_offspring()
 
-            ppa.normalize_objective_values_offspring()
+            # ppa.normalize_objective_values_offspring_and_parents()
             ppa.select_survivors()
             ppa.save_heritage()
 
@@ -53,12 +55,26 @@ class run:
             pickle.dump(ppa, open(self.file_name, "wb"))
         return ppa
 
-
+#
 # benchmark_dimensions = 2
 # start = run(config.benchmark_name, benchmark_dimensions, config.survivor_selection, 0, "results/test/mc-test.p")
 # results = start.run()
 # best_final_pop = min(results.parent_population, key=attrgetter('objective_value'))
 # print(str(best_final_pop.objective_value).replace('.', ','))
+#
+# import matplotlib.pyplot as plt
+# plt.plot(results.higher_frac_list)
+# plt.title(config.survivor_selection)
+# plt.show()
+#
+# import pandas as pd
+# indivuals_per_generation = pd.DataFrame(results.heritage.unique_individual_count, columns=['generation', '#individuals'])
+# plt.plot(indivuals_per_generation['generation'], indivuals_per_generation['#individuals'])
+# plt.title(f'individuals per generation for {results.survivor_selection_name} on {results.benchmark_name}')
+# plt.xlabel('generation')
+# plt.ylabel('# of individuals')
+# plt.show()
+#
 # print('done')
 
 if __name__ == '__main__':
@@ -69,7 +85,7 @@ if __name__ == '__main__':
     Path(folder_path).mkdir(parents=False, exist_ok=False)
     processes = []
     with concurrent.futures.ProcessPoolExecutor() as executor:  # max_workers=6
-        for run_n in range(11):
+        for run_n in range(10):
             print(f'run {run_n}')
             # ! change this to all benchmarks for all benchmarks
             for benchmark in config.all_benchmarks:

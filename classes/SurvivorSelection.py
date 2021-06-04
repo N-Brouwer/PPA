@@ -56,6 +56,14 @@ class SurvivorSelection:
         new_population = self.tournament(parents, offspring, self.pop_size-1)
         combined_population = parents[:] + offspring[:] # todo check if calculations do not influence the original parents and offspring variables
         new_population.append(min(combined_population, key=attrgetter('objective_value')))
+
+        #todo rm: This shows that nearly always offspring is included in the new population
+        # if not any(element in new_population for element in offspring):
+        #     o_ids = [i.id for i in offspring]
+        #     np_ids = [i.id for i in new_population]
+        #     print('no new offspring selected')
+        # # else:
+        # #     print('age should be larger than one')
         return new_population
 
     def no_replacement_tournament(self, parents:[], offspring:[]):
@@ -132,7 +140,6 @@ class SurvivorSelection:
         combined_population.sort(key=lambda i: i.objective_value)
         sum_of_ranks = sum(np.arange(1, len(combined_population) + 1,
                                      1))  # added 1 because the minimal position is 0, but should be rank 1
-
 
         for t in range(self.pop_size):
             y = 0

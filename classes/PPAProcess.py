@@ -26,7 +26,6 @@ class PPAProcess:
         self.offspring_population = []
 
         self.parents_norm_objective_values = []
-        self.offspring_norm_objective_values = []
 
         self.parents_fitness = []  # todo do i still use this?
         self.offspring_fitness = []  # todo do i still use this?
@@ -47,14 +46,14 @@ class PPAProcess:
     # def calculate_objective_values_offspring(self):
     #     self.calculate_objective_values(self.offspring_population)
 
-    def normalize_objective_values_offspring(self):
-        self.offspring_norm_objective_values = self.normalize_objective_values(self.offspring_population)
+    # def normalize_objective_values_offspring_and_parents(self):
+    #     self.normalize_objective_values(self.offspring_population + self.parent_population)
 
     def calculate_fitness_values_parents(self):
         self.parents_fitness = self.calculate_fitness(self.parent_population)
 
-    def calculate_fitness_values_offspring(self):
-        self.offspring_fitness = self.calculate_fitness(self.offspring_population)
+    # def calculate_fitness_values_offspring(self):
+    #     self.offspring_fitness = self.calculate_fitness(self.offspring_population)
 
     def generate_offspring(self):
         population = self.parent_population
@@ -103,13 +102,24 @@ class PPAProcess:
             self.best_objval_during_run = min_objval_individual
 
     def save_heritage(self):
-        self.heritage.add_ancestors(self.parent_population, self.generation)
+        # self.heritage.add_ancestors(self.parent_population, self.generation)
+
+        # the fitness and rank of the individuals at the beginning of this generation
+        self.heritage.save_fitness_and_rank(self.parents_fitness, self.generation)
+
+        # the number of offspring generated calculated at the end of a generation
+        self.heritage.save_offspring_count(self.offspring_population, self.generation)
+
+        # unique individuals at the end of a generation
         self.heritage.save_unique_individual_count(self.generation, self.parent_population)
+
+        # ages at the end of a generation
         self.heritage.save_ages(self.generation, self.parent_population)
+        self.heritage.save_best_individual_in_generation(self.parent_population, self.generation)
 
         for individual in self.parent_population:
             if not individual.parent_child_relation_recorded:
-                self.heritage.save_relation(individual.id, individual.parent_id)
+                self.heritage.save_relation(individual.id, individual.parent_id, self.generation)
                 individual.parent_child_relation_recorded = True
 
     #  sort of private functions
@@ -121,13 +131,13 @@ class PPAProcess:
         if min_objective_val == max_objective_val:
             for i in population:
                 i.fitness = 0.5
-                fitness_list.append(0.5)
-            return
+                fitness_list.append({'id':i.id,'fitness':0.5})
+            return fitness_list
         else:
             for i in population:
                 fitness = 0.5 * (np.tanh(4 * i.norm_objective_value - 2) + 1)
                 i.fitness = fitness
-                fitness_list.append(fitness)
+                fitness_list.append({'id':i.id,'fitness':fitness})
             return fitness_list
 
     def calculate_objective_values(self, population: []):
