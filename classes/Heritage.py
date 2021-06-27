@@ -32,9 +32,9 @@ class Heritage:
         ages = [individual.age for individual in parent_population]
         self.ages_per_generation[generation] = ages
 
-    def save_best_individual_in_generation(self, parent_population: [], generation: int):
+    def save_best_individual_in_generation(self, parent_population: [], generation: int, evaluations: int):
         best_individual = min(parent_population, key=attrgetter('objective_value'))
-        self.best_individual_in_generation.append([best_individual, generation])
+        self.best_individual_in_generation.append([best_individual, generation, evaluations])
 
     # Note: these fitnesses are from the beginning of the generation, before offspring is generated
     def save_fitness_and_rank(self, id_fitness_list: [], generation: int):
@@ -42,6 +42,7 @@ class Heritage:
         rank_counter = 1
         ranks = []
         for id_fitness in id_fitness_list:
-            ranks.append({'id': id_fitness['id'], 'rank': rank_counter, 'fitness': id_fitness['fitness']})
+            ranks.append({'id': id_fitness['id'], 'rank': rank_counter, 'fitness': id_fitness['fitness'],
+                          'generation': generation})
             rank_counter += 1
-        self.ranks_per_generation.append({generation: ranks})
+        self.ranks_per_generation.append(ranks)

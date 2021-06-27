@@ -115,7 +115,7 @@ class PPAProcess:
 
         # ages at the end of a generation
         self.heritage.save_ages(self.generation, self.parent_population)
-        self.heritage.save_best_individual_in_generation(self.parent_population, self.generation)
+        self.heritage.save_best_individual_in_generation(self.parent_population, self.generation, self.benchmark.eval_counter)
 
         for individual in self.parent_population:
             if not individual.parent_child_relation_recorded:

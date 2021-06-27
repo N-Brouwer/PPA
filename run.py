@@ -56,56 +56,52 @@ class run:
         return ppa
 
 #
-# benchmark_dimensions = 2
-# start = run(config.benchmark_name, benchmark_dimensions, config.survivor_selection, 0, "results/test/mc-test.p")
-# results = start.run()
-# best_final_pop = min(results.parent_population, key=attrgetter('objective_value'))
-# print(str(best_final_pop.objective_value).replace('.', ','))
+benchmark_dimensions = 2
+start = run(config.benchmark_name, benchmark_dimensions, config.survivor_selection, 0, "results/test/mc-test.p")
+results = start.run()
+best_final_pop = min(results.parent_population, key=attrgetter('objective_value'))
+print(str(best_final_pop.objective_value).replace('.', ','))
+
+import matplotlib.pyplot as plt
+import pandas as pd
+indivuals_per_generation = pd.DataFrame(results.heritage.unique_individual_count, columns=['generation', '#individuals'])
+plt.plot(indivuals_per_generation['generation'], indivuals_per_generation['#individuals'])
+plt.title(f'individuals per generation for {results.survivor_selection_name} on {results.benchmark_name}')
+plt.xlabel('generation')
+plt.ylabel('# of individuals')
+plt.show()
+
+print('done')
 #
-# import matplotlib.pyplot as plt
-# plt.plot(results.higher_frac_list)
-# plt.title(config.survivor_selection)
-# plt.show()
+# if __name__ == '__main__':
 #
-# import pandas as pd
-# indivuals_per_generation = pd.DataFrame(results.heritage.unique_individual_count, columns=['generation', '#individuals'])
-# plt.plot(indivuals_per_generation['generation'], indivuals_per_generation['#individuals'])
-# plt.title(f'individuals per generation for {results.survivor_selection_name} on {results.benchmark_name}')
-# plt.xlabel('generation')
-# plt.ylabel('# of individuals')
-# plt.show()
+#     print('starting')
+#     start_time = time.time()
+#     folder_path = f"results/results-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+#     Path(folder_path).mkdir(parents=False, exist_ok=False)
+#     processes = []
+#     with concurrent.futures.ProcessPoolExecutor() as executor:  # max_workers=6
+#         for run_n in range(15):
+#             print(f'run {run_n}')
+#             # ! change this to all benchmarks for all benchmarks
+#             for benchmark in config.all_benchmarks: #all_benchmarks or: temp_benchmark
+#                 for selection_method in config.all_selection_methods: # all_selection_methods or:temp_selection
 #
-# print('done')
-
-if __name__ == '__main__':
-
-    print('starting')
-    start_time = time.time()
-    folder_path = f"results/results-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
-    Path(folder_path).mkdir(parents=False, exist_ok=False)
-    processes = []
-    with concurrent.futures.ProcessPoolExecutor() as executor:  # max_workers=6
-        for run_n in range(10):
-            print(f'run {run_n}')
-            # ! change this to all benchmarks for all benchmarks
-            for benchmark in config.all_benchmarks:
-                for selection_method in config.all_selection_methods:
-
-                    if benchmark in config.n_dim_benchmarks:
-                        for dim in config.n_dimensions:
-                            save_path = folder_path + "/" + str(
-                                selection_method + "-" + benchmark + f"{dim}D") + f"run-{run_n}.p"
-                            ppa_class = run(benchmark, dim, selection_method, run_n, save_path)
-                            executor.submit(ppa_class.run)
-                    else:
-                        dim = 2
-                        save_path = folder_path + "/" + str(selection_method + "-" + benchmark) + f"run-{run_n}.p"
-                        ppa_class = run(benchmark, dim, selection_method, run_n, save_path)
-                        executor.submit(ppa_class.run)
-
-    end_time = time.time()
-
-    print(f'done: {end_time - start_time}')
-
-    notify = Notify()
-    notify.send('your code is done')
+#                     if benchmark in config.n_dim_benchmarks:
+#                         for dim in config.n_dimensions: #n_dimensions or:temp_dimensions
+#                             save_path = folder_path + "/" + str(
+#                                 selection_method + "-" + benchmark + f"{dim}D") + f"run-{run_n}.p"
+#                             ppa_class = run(benchmark, dim, selection_method, run_n, save_path)
+#                             executor.submit(ppa_class.run)
+#                     else:
+#                         dim = 2
+#                         save_path = folder_path + "/" + str(selection_method + "-" + benchmark) + f"run-{run_n}.p"
+#                         ppa_class = run(benchmark, dim, selection_method, run_n, save_path)
+#                         executor.submit(ppa_class.run)
+#
+#     end_time = time.time()
+#
+#     print(f'done: {end_time - start_time}')
+#
+#     notify = Notify()
+#     notify.send('your code is done')
