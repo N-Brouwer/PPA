@@ -34,26 +34,18 @@ class PPAProcess:
         self.run_n = ''
         self.benchmark_name = ''
         self.survivor_selection_name = ''
-        self.best_objval_during_run = self.parent_population[
-            0]  # recorded in the select survivors method, initialised with a random individual
+        self.best_objval_during_run = self.parent_population[0]  # placeholder, updated in first evaluation of inputs recorded in the select survivors method
 
     def calculate_objective_values_parents(self):
         self.calculate_objective_values(self.parent_population)
+        self.best_objval_during_run = min(self.parent_population,
+                                          key=attrgetter('objective_value'))
 
     def normalize_objective_values_parents(self):
         self.parents_norm_objective_values = self.normalize_objective_values(self.parent_population)
 
-    # def calculate_objective_values_offspring(self):
-    #     self.calculate_objective_values(self.offspring_population)
-
-    # def normalize_objective_values_offspring_and_parents(self):
-    #     self.normalize_objective_values(self.offspring_population + self.parent_population)
-
     def calculate_fitness_values_parents(self):
         self.parents_fitness = self.calculate_fitness(self.parent_population)
-
-    # def calculate_fitness_values_offspring(self):
-    #     self.offspring_fitness = self.calculate_fitness(self.offspring_population)
 
     def generate_offspring(self):
         population = self.parent_population
@@ -107,20 +99,21 @@ class PPAProcess:
         # the fitness and rank of the individuals at the beginning of this generation
         self.heritage.save_fitness_and_rank(self.parents_fitness, self.generation)
 
-        # the number of offspring generated calculated at the end of a generation
-        self.heritage.save_offspring_count(self.offspring_population, self.generation)
+        # # the number of offspring generated calculated at the end of a generation
+        # self.heritage.save_offspring_count(self.offspring_population, self.generation)
 
         # unique individuals at the end of a generation
         self.heritage.save_unique_individual_count(self.generation, self.parent_population)
 
         # ages at the end of a generation
-        self.heritage.save_ages(self.generation, self.parent_population)
-        self.heritage.save_best_individual_in_generation(self.parent_population, self.generation, self.benchmark.eval_counter)
+        # self.heritage.save_ages(self.generation, self.parent_population)
+        self.heritage.save_best_individual_in_generation(self.parent_population, self.generation,
+                                                         self.benchmark.eval_counter)
 
-        for individual in self.parent_population:
-            if not individual.parent_child_relation_recorded:
-                self.heritage.save_relation(individual.id, individual.parent_id, self.generation)
-                individual.parent_child_relation_recorded = True
+        # for individual in self.parent_population:
+        #     if not individual.parent_child_relation_recorded:
+        #         self.heritage.save_relation(individual.id, individual.parent_id, self.generation)
+        #         individual.parent_child_relation_recorded = True
 
     #  sort of private functions
     def calculate_fitness(self, population: []):
@@ -131,13 +124,13 @@ class PPAProcess:
         if min_objective_val == max_objective_val:
             for i in population:
                 i.fitness = 0.5
-                fitness_list.append({'id':i.id,'fitness':0.5})
+                fitness_list.append({'id': i.id, 'fitness': 0.5})
             return fitness_list
         else:
             for i in population:
                 fitness = 0.5 * (np.tanh(4 * i.norm_objective_value - 2) + 1)
                 i.fitness = fitness
-                fitness_list.append({'id':i.id,'fitness':fitness})
+                fitness_list.append({'id': i.id, 'fitness': fitness})
             return fitness_list
 
     def calculate_objective_values(self, population: []):

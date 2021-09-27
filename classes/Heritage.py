@@ -18,23 +18,24 @@ class Heritage:
     #             self.ancestors.update(
     #                 {i.id: {'id': i.id, 'obj_values': i.objective_value, 'inputs': i.inputs, 'parents': i.parents,
     #                         'generation': generation}})
-    def save_offspring_count(self, offspring: [], generation: int):
-        self.offspring_per_generation.append({'generation': generation, 'offspring_len': len(offspring)})
 
-    def save_relation(self, child_id: int, parent_id: int, generation: int):
-        self.relations.append([child_id, parent_id, generation])
+    # def save_offspring_count(self, offspring: [], generation: int):
+    #     self.offspring_per_generation.append({'generation': generation, 'offspring_len': len(offspring)})
+
+    # def save_relation(self, child_id: int, parent_id: int, generation: int):
+    #     self.relations.append([child_id, parent_id, generation])
 
     def save_unique_individual_count(self, generation: int, parent_population: []):
         unique_ids = set([individual.id for individual in parent_population])
         self.unique_individual_count.append([generation, len(unique_ids)])
 
-    def save_ages(self, generation: int, parent_population: []):
-        ages = [individual.age for individual in parent_population]
-        self.ages_per_generation[generation] = ages
+    # def save_ages(self, generation: int, parent_population: []):
+    #     ages = [individual.age for individual in parent_population]
+    #     self.ages_per_generation[generation] = ages
 
     def save_best_individual_in_generation(self, parent_population: [], generation: int, evaluations: int):
         best_individual = min(parent_population, key=attrgetter('objective_value'))
-        self.best_individual_in_generation.append([best_individual, generation, evaluations])
+        self.best_individual_in_generation.append([best_individual.objective_value, generation, evaluations])
 
     # Note: these fitnesses are from the beginning of the generation, before offspring is generated
     def save_fitness_and_rank(self, id_fitness_list: [], generation: int):

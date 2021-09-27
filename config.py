@@ -3,13 +3,13 @@ pop_size = 30
 max_offspring = 5  # n_max
 
 # run settings
-max_evaluations = 10_000
+max_evaluations = 50_000
 
 # benchmarks
-benchmark_name = 'Cigar'  # Six Hump Camel, Martin-Gaddy
+benchmark_name = 'Rosenbrock'  # Six Hump Camel, Martin-Gaddy
 
 # survivor selection
-survivor_selection = 'roulette_wheel'  # mupluslambda, mulambda, tournament, roulette_wheel, linear_ranking,
+survivor_selection = 'single_elitist_tournament'  # mupluslambda, mulambda, tournament, roulette_wheel, linear_ranking,
 # single_elitist_rws
 tournament_size = 7
 
@@ -21,7 +21,7 @@ all_selection_methods = ['mupluslambda', 'mulambda', 'tournament', 'roulette_whe
                          'single_elitist_rws', 'single_elitist_tournament', 'no_replacement_tournament']
 
 record_heritage_selection_methods = ['mupluslambda', 'tournament', 'single_elitist_tournament',
-                                     'no_replacement_tournament', 'roulette_wheel']
+                                     'no_replacement_tournament', 'roulette_wheel','single_elitist_rws']
 
 n_dim_benchmarks = ['Ackley', 'Rosenbrock', 'Griewank', 'Rastrigrin', 'Schwefel', 'Ellipse', 'Cigar', 'Tablet',
                     'Sphere']
