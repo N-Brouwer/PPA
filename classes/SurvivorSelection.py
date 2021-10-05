@@ -35,10 +35,8 @@ class SurvivorSelection:
         else:
             raise Exception('the specified survivor selection method does not exist')
 
-    # def select_survivors(self, parents: [], offspring: [], ppa_process):
     def select_survivors(self, parents: [], offspring: []):
         return self.method(parents, offspring)
-        # return self.method(parents, offspring, ppa_process)
 
     def mulambda(self, parents: [], offspring: []):
         new_population = offspring[:]
@@ -57,13 +55,6 @@ class SurvivorSelection:
         combined_population = parents[:] + offspring[:] # todo check if calculations do not influence the original parents and offspring variables
         new_population.append(min(combined_population, key=attrgetter('objective_value')))
 
-        #todo rm: This shows that nearly always offspring is included in the new population
-        # if not any(element in new_population for element in offspring):
-        #     o_ids = [i.id for i in offspring]
-        #     np_ids = [i.id for i in new_population]
-        #     print('no new offspring selected')
-        # # else:
-        # #     print('age should be larger than one')
         return new_population
 
     def no_replacement_tournament(self, parents:[], offspring:[]):
@@ -81,16 +72,6 @@ class SurvivorSelection:
                 tournament = random.sample(combined_population, k=self.tournament_size)
             winner = min(tournament, key=attrgetter('objective_value'))
 
-            # if winner in parents:
-            #     new_individual = deepcopy(winner)
-            #     ppa_process.id_counter +=1
-            #     new_individual.id = ppa_process.id_counter
-            #     new_individual.parent_id = winner.id
-            #     new_individual.set_parents(winner.parents[:])
-            #     new_individual.parent_child_relation_recorded = False
-            #     new_individual.age = 0
-            #     new_population.append(new_individual)
-            # else:
             new_population.append(winner)
         return new_population
 
@@ -128,11 +109,7 @@ class SurvivorSelection:
                     new_population.append(i)
                     break
 
-        # # remove one from pop size in the loop before and comment-in these two lines to add elitist approach:
-        # combined_population.sort(key=lambda i: i.objective_value)
-        # new_population.append(combined_population[0])
-
-        return new_population
+                return new_population
 
     def linear_ranking(self, parents: [], offspring: []):
         new_population = []
@@ -154,4 +131,3 @@ class SurvivorSelection:
 
         return new_population
 
-    # def select_rws_winner(self, population:[]):

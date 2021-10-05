@@ -1,1 +1,13 @@
-/results/*
+*.p
+*.pyc
+*.ipynb_checkpoints*
+*.png
+*.eps
+*.svg
+*.pdf
+*/wouter_results/*
+*/wouter_results_faulty/*
+*/test/*
+*/my_results_rep/*
+*/cleaned_wouter/*
+*/brouwer_vandenberg_2022/*
