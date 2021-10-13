@@ -45,18 +45,22 @@ class SurvivorSelection:
     # =============
     # Below are the selection methods as specified in the research
     # =============
+
+    # add best individuals from offspring
     def mulambda(self, parents: [], offspring: []):
         new_population = offspring[:]
         new_population.sort(key=lambda i: i.objective_value)
 
         return new_population[:self.pop_size]
 
+    # add popsize best individuals from parents + offspring
     def mupluslambda(self, parents: [], offspring: []):
         new_population = parents + offspring
         new_population.sort(key=lambda i: i.objective_value)
 
         return new_population[:self.pop_size]
 
+    # tournament selection selecting one less individual, but add the best individual of parents + offspring
     def single_elitist_tournament(self, parents: [], offspring: []):
         new_population = self.tournament(parents, offspring, self.pop_size - 1)
         combined_population = parents[:] + offspring[:]
@@ -64,8 +68,8 @@ class SurvivorSelection:
 
         return new_population
 
-    # this function performs exactly the same as tournament selection, except the individuals are selected without replacement,
-    # made possible by using random.sample, instead of random.choices
+    # this function performs exactly the same as tournament selection, except the individuals are selected without
+    # replacement, made possible by using random.sample, instead of random.choices
     def no_replacement_tournament(self, parents: [], offspring: []):
         new_population = self.tournament(parents, offspring, self.pop_size, False)
         return new_population
@@ -94,10 +98,12 @@ class SurvivorSelection:
         new_population.append(min(combined_population, key=attrgetter('objective_value')))
         return new_population
 
+    # selection method where the relative objective value size is proportional to the selection probability
     def rws(self, parents: [], offspring: [], custom_pop_size=-1):
         combined_population = parents[:] + offspring[
                                            :]
-        # normalize objective values
+        # (re-)normalize objective values because otherwise the the higher the objective value, the higher the
+        # selection probability, which we do not want, we want the reverse to be true
         min_objective_val = min(individual.objective_value for individual in combined_population)
         max_objective_val = max(individual.objective_value for individual in combined_population)
         epsilon = 1e-100
@@ -112,6 +118,7 @@ class SurvivorSelection:
 
         population_size = custom_pop_size if custom_pop_size > 0 else self.pop_size
 
+        # select popsize or custom popsize individuals form the parents+offspring
         for t in range(population_size):
             roulette_wheel = 0
             r = random.uniform(0, summed_renorm_objective_value)
@@ -123,7 +130,8 @@ class SurvivorSelection:
                     break
 
                 return new_population
-
+    # Select individuals based on rank, summing all ranks available and drawing a random number; next we add rank by
+    # rank until the random number is met or passed
     def linear_ranking(self, parents: [], offspring: []):
         new_population = []
         combined_population = parents[:] + offspring[:]
