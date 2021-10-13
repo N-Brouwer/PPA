@@ -1,6 +1,8 @@
 import math
 import numpy as np
 
+# the benchmark function, determined by the inialization of each run, fed by the config file
+# every instance hold all information of a benchmark function, including, bounds and optimum
 class Benchmark:
 
     def __init__(self, benchmark_name, input_dimensions):
@@ -11,6 +13,8 @@ class Benchmark:
         self.set_benchmark(benchmark_name)
         self.eval_counter = 0
 
+    # we dynamically assign a benchmark function to the self.benchmark object, and set the properties of each benchmark
+    # as class object values; by doing so we can treat every benchmark the same with the same class calls
     def set_benchmark(self, benchmark_name: str):
 
         if benchmark_name == 'Six-Hump-Camel':
@@ -85,10 +89,14 @@ class Benchmark:
         else:
             raise Exception('The provided benchmark function does not exist')
 
+    # called to evaluate the inputs of a individual on the specified benchmark function
     def eval(self, inputs: np.array):
         self.eval_counter += 1
         return self.benchmark(inputs)
 
+    # =============
+    # Below are all the separate benchmark functions
+    # =============
     def six_hump_camel(self, inputs: []):
         first_term = (4 - 2.1 * (inputs[0] ** 2) + (inputs[0] ** 4) / 3) * inputs[0] ** 2
         second_term = inputs[0] * inputs[1]

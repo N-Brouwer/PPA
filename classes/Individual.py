@@ -1,6 +1,7 @@
 from PPA.classes.Benchmark import Benchmark
 
-
+# The individual class represents an individual in the PPA process, containing all information belonging to an
+# individual, amongst others: objective value, fitness value, input values, and some heritage data
 class Individual:
 
     def __init__(self, individual_id: int):
@@ -28,5 +29,3 @@ class Individual:
     def calculate_fitness(self, benchmark: Benchmark):
         self.fitness = benchmark.eval(self.inputs)
 
-    def increment_age(self):
-        self.age += 1

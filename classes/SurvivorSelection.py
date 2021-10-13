@@ -6,12 +6,15 @@ from PPA import config
 from operator import attrgetter
 
 
+# the survivor selection class, selection survivors to participate in the next generation
 class SurvivorSelection:
 
     def __init__(self, method_name: str, pop_size: int):
         self.method = self.set_method(method_name)
         self.pop_size = pop_size
 
+    # we dynamically assign a selection method to the class object "method" this way every run can call the same
+    # fucntion, but containing different selection methods
     def set_method(self, method_name):
         if method_name == 'mulambda':
             return self.mulambda
@@ -35,9 +38,13 @@ class SurvivorSelection:
         else:
             raise Exception('the specified survivor selection method does not exist')
 
+    # we call the dynamically assigned selection method
     def select_survivors(self, parents: [], offspring: []):
         return self.method(parents, offspring)
 
+    # =============
+    # Below are the selection methods as specified in the research
+    # =============
     def mulambda(self, parents: [], offspring: []):
         new_population = offspring[:]
         new_population.sort(key=lambda i: i.objective_value)
@@ -51,21 +58,25 @@ class SurvivorSelection:
         return new_population[:self.pop_size]
 
     def single_elitist_tournament(self, parents: [], offspring: []):
-        new_population = self.tournament(parents, offspring, self.pop_size-1)
-        combined_population = parents[:] + offspring[:] # todo check if calculations do not influence the original parents and offspring variables
+        new_population = self.tournament(parents, offspring, self.pop_size - 1)
+        combined_population = parents[:] + offspring[:]
         new_population.append(min(combined_population, key=attrgetter('objective_value')))
 
         return new_population
 
-    def no_replacement_tournament(self, parents:[], offspring:[]):
+    # this function performs exactly the same as tournament selection, except the individuals are selected without replacement,
+    # made possible by using random.sample, instead of random.choices
+    def no_replacement_tournament(self, parents: [], offspring: []):
         new_population = self.tournament(parents, offspring, self.pop_size, False)
         return new_population
 
+    # the tournament selection method used by both with and without replacement tournament selection methods
     def tournament(self, parents: [], offspring: [], custom_pop_size=-1, replacement=True):
         combined_population = parents + offspring
         new_population = []
         new_pop_size = custom_pop_size if custom_pop_size > 0 else self.pop_size
         for i in range(new_pop_size):
+            # the random.choices samples with replacement, the random.sample without replacement
             if replacement:
                 tournament = random.choices(combined_population, k=self.tournament_size)
             else:
@@ -75,15 +86,17 @@ class SurvivorSelection:
             new_population.append(winner)
         return new_population
 
+    # roulette wheel selection, except there is one less indivual selected, instead the best individual is
+    # automatically transferred
     def single_elitist_rws(self, parents: [], offspring: []):
-        new_population = self.rws(parents, offspring, self.pop_size-1)
-        combined_population = parents[:] + offspring[:] # todo check if calculations do not influence the original parents and offspring variables
+        new_population = self.rws(parents, offspring, self.pop_size - 1)
+        combined_population = parents[:] + offspring[:]
         new_population.append(min(combined_population, key=attrgetter('objective_value')))
         return new_population
 
     def rws(self, parents: [], offspring: [], custom_pop_size=-1):
         combined_population = parents[:] + offspring[
-                                           :]  # todo check if calculations do not influence the original parents and offspring variables
+                                           :]
         # normalize objective values
         min_objective_val = min(individual.objective_value for individual in combined_population)
         max_objective_val = max(individual.objective_value for individual in combined_population)
@@ -121,7 +134,7 @@ class SurvivorSelection:
         for t in range(self.pop_size):
             y = 0
             r = random.uniform(0, sum_of_ranks)
-            rank = len(combined_population)+1
+            rank = len(combined_population) + 1
             for i in combined_population:
                 rank -= 1
                 y += rank
@@ -130,4 +143,3 @@ class SurvivorSelection:
                     break
 
         return new_population
-
