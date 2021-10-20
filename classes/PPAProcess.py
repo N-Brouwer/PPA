@@ -33,6 +33,29 @@ class PPAProcess:
         self.best_objval_during_run = self.parent_population[
             0]  # placeholder, updated in first evaluation of inputs recorded in the select survivors method
 
+     # We initialize popSize new individuals, and set their parent to be -1,
+    def initial_generate_parents(self, pop_size: int, benchmark: Benchmark):
+        parents = []
+        self.parent_population = []
+        for i in range(0, pop_size):
+            # to ensure every individual gets a unique id, we increase the id_counter here, and in the generate
+            # offspring function everytime a new individual is created
+            self.id_counter += 1
+            x = Individual(self.id_counter)
+            x.parent_id = -1
+            inputs = []
+            # we initialize an individual within the bounds of the benchmark function
+            for d in range(0, benchmark.input_dimension):
+                bound = benchmark.bounds[d]
+                inputs.append(random.uniform(bound[0], bound[1]))
+            x.set_inputs(inputs)
+            x.set_parents([])
+            # finally we append each individual to the parent collection
+            parents.append(x)
+
+        return parents    
+        
+        
     def calculate_objective_values_parents(self):
         self.calculate_objective_values(self.parent_population)
         self.best_objval_during_run = min(self.parent_population,
@@ -152,24 +175,4 @@ class PPAProcess:
 
         return norm_objective_values
 
-    # We initialize popSize new individuals, and set their parent to be -1,
-    def initial_generate_parents(self, pop_size: int, benchmark: Benchmark):
-        parents = []
-        self.parent_population = []
-        for i in range(0, pop_size):
-            # to ensure every individual gets a unique id, we increase the id_counter here, and in the generate
-            # offspring function everytime a new individual is created
-            self.id_counter += 1
-            x = Individual(self.id_counter)
-            x.parent_id = -1
-            inputs = []
-            # we initialize an individual within the bounds of the benchmark function
-            for d in range(0, benchmark.input_dimension):
-                bound = benchmark.bounds[d]
-                inputs.append(random.uniform(bound[0], bound[1]))
-            x.set_inputs(inputs)
-            x.set_parents([])
-            # finally we append each individual to the parent collection
-            parents.append(x)
-
-        return parents
+   
