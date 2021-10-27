@@ -1,8 +1,8 @@
 import math
 import numpy as np
 
-# the benchmark function, determined by the inialization of each run, fed by the config file
-# every instance hold all information of a benchmark function, including, bounds and optimum
+# the benchmark function, determined by the initialization of each run, fed by the config file
+# every instance holds all information of a benchmark function, including, bounds and optimum
 class Benchmark:
 
     def __init__(self, benchmark_name, input_dimensions):
