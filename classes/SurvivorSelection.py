@@ -129,7 +129,7 @@ class SurvivorSelection:
                     new_population.append(i)
                     break
 
-                return new_population
+        return new_population
     # Select individuals based on rank, summing all ranks available and drawing a random number; next we add rank by
     # rank until the random number is met or passed
     def linear_ranking(self, parents: [], offspring: []):
